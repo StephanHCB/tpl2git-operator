@@ -39,3 +39,9 @@ For deployment into the cluster instead
 - build the docker image
 - push it to a registry the cluster can reach
 - `kubectl apply -k config/default` (uses built-in kustomize) 
+
+## example resource
+
+See `example.yaml`.
+
+`kubectl apply -f example.yaml`

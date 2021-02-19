@@ -1,0 +1,17 @@
+apiVersion: tpl2git.stephanhcb.github.io/v1alpha1
+kind: Renderer
+metadata:
+  name: example-renderer
+spec:
+  blueprint_repo_url: 'https://github.com/StephanHCB/tpl-go-rest-chi.git'
+  blueprint_branch: 'master'
+  blueprint_name: 'main'
+
+  target_repo_url: 'https://github.com/StephanHCB/scratch.git'
+  target_branch: 'update'
+  target_branch_fork_from: 'master'
+  target_spec_file: 'generated-main.yaml'
+
+  parameters:
+    serviceName: scratch
+    serviceUrl: github.com/StephanHCB/scratch
