@@ -16,8 +16,30 @@ type RendererSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Renderer. Edit Renderer_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// the source
+
+	// repo url for the blueprint
+	BlueprintRepoUrl string `json:"blueprint_repo_url,omitempty"`
+	// branch to read the blueprint from, defaults to the main branch if left unset
+	BlueprintBranch string `json:"blueprint_branch,omitempty"`
+	// specifies to read 'generator-<blueprint_name>.yaml', selects which blueprint to generate, defaults to 'main' if left unset
+	BlueprintName string `json:"blueprint_name,omitempty"`
+
+	// the target
+
+	// repo url to render to if the spec has changed
+	TargetRepoUrl string `json:"target_repo_url,omitempty"`
+	// branch to commit to if the spec has changed (will be created if does not exist or updated), defaults to 'update' if left unset
+	TargetBranch string `json:"target_branch,omitempty"`
+	// branch to fork from if the target branch does not yet exist, defaults to the main branch if left unset
+	TargetBranchForkFrom string `json:"target_branch_fork_from,omitempty"`
+	// filename of the spec file that is placed in the render output, defaults to 'generated-main.yaml' if left unset
+	TargetSpecFile string `json:"target_spec_file,omitempty"`
+
+	// the actual parameter values to be set when performing the render operation. These are written into the target_spec_file
+	//
+	// changing these is what triggers the render operation because the resource becomes out of sync
+	Parameters map[string]string `json:"parameters"`
 }
 
 // RendererStatus defines the observed state of Renderer

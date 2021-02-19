@@ -11,12 +11,12 @@ operator-sdk init --domain "stephanhcb.github.io" --repo "github.com/StephanHCB/
 --license none --owner "StephanHCB" --plugins "go.kubebuilder.io/v3" --project-name "tpl2git-operator"
 ```
 
-create a resource and a controller scaffold
+create a custom resource and a controller scaffold
 
 ```
 operator-sdk create api --group tpl2git --version v1alpha1 --kind Renderer --resource --controller
 ```
 
-
-
+edit `api/v1alpha1/renderer_types.go` to define the fields of your custom resource, then run `make` to
+adapt the code to reflect your changes.
 
