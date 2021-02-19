@@ -17,10 +17,25 @@ create a custom resource and a controller scaffold
 operator-sdk create api --group tpl2git --version v1alpha1 --kind Renderer --resource --controller
 ```
 
+## implementation
+
 edit `api/v1alpha1/renderer_types.go` to define the fields of your custom resource. 
 
 run `make` to adapt the code to reflect your changes.
 
 run `make manifests` to create the custom resource definition manifests.
 
+implement the reconcile loop, then build the binary
 
+## execution for debugging
+
+- build the binary
+- transfer it to a system with an admin kubeconfig
+- transfer config/crd directory
+- `kubectl apply -k config/crd` (uses built-in kustomize)
+- run the binary with access to an admin kubeconfig
+
+For deployment into the cluster instead
+- build the docker image
+- push it to a registry the cluster can reach
+- `kubectl apply -k config/default` (uses built-in kustomize) 
