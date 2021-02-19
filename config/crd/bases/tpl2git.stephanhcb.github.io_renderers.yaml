@@ -77,6 +77,16 @@ spec:
             type: object
           status:
             description: RendererStatus defines the observed state of Renderer
+            properties:
+              current_parameters:
+                additionalProperties:
+                  type: string
+                description: "the parameter values used during last render \n this
+                  allows the operator to determine if there is anything to be done
+                  (and gives us some debugging info)"
+                type: object
+            required:
+            - current_parameters
             type: object
         type: object
     served: true
