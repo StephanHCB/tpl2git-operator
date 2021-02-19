@@ -46,6 +46,12 @@ type RendererSpec struct {
 type RendererStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// the parameter values used during last render
+	//
+	// this allows the operator to determine if there is anything to be done
+	// (and gives us some debugging info)
+	CurrentParameters map[string]string `json:"current_parameters"`
 }
 
 // +kubebuilder:object:root=true
