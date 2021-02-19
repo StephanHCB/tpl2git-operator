@@ -1,0 +1,7 @@
+apiVersion: tpl2git.stephanhcb.github.io/v1alpha1
+kind: Renderer
+metadata:
+  name: renderer-sample
+spec:
+  # Add fields here
+  foo: bar

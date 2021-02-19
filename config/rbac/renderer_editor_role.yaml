@@ -1,0 +1,24 @@
+# permissions for end users to edit renderers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: renderer-editor-role
+rules:
+- apiGroups:
+  - tpl2git.stephanhcb.github.io
+  resources:
+  - renderers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - tpl2git.stephanhcb.github.io
+  resources:
+  - renderers/status
+  verbs:
+  - get
