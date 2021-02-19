@@ -36,10 +36,26 @@ type RendererReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.7.0/pkg/reconcile
 func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = r.Log.WithValues("renderer", req.NamespacedName)
+	logger := r.Log.WithValues("renderer", req.NamespacedName)
+
+	// TODO some pointers on how to do proper error handling
+	// https://github.com/improbable-eng/etcd-cluster-operator/blob/f84abc6561735814debd67d45bb62d2d2ed8cf4a/controllers/etcdcluster_controller.go#L546
+
+	// obtain the Renderer instance for this reconcile request
+	renderer := &tpl2gitv1alpha1.Renderer{}
+	if err := r.Get(ctx, req.NamespacedName, renderer); err != nil {
+		logger.Error(err, "error during resource get for renderer")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// if you need it:
+	// original := renderer.DeepCopy()
 
 	// your logic here
 
+	// if we have status fields, patch the renderer in the cluster to update the status fields
+
+	logger.Info("success updating resource with target_repo_url = " + renderer.Spec.TargetRepoUrl)
 	return ctrl.Result{}, nil
 }
 
