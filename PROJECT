@@ -1,0 +1,8 @@
+domain: stephanhcb.github.io
+layout: go.kubebuilder.io/v3
+projectName: tpl2git-operator
+repo: github.com/StephanHCB/tpl2git-operator
+version: 3-alpha
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
