@@ -1,0 +1,91 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: renderers.tpl2git.stephanhcb.github.io
+spec:
+  group: tpl2git.stephanhcb.github.io
+  names:
+    kind: Renderer
+    listKind: RendererList
+    plural: renderers
+    singular: renderer
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Renderer is the Schema for the renderers API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RendererSpec defines the desired state of Renderer
+            properties:
+              blueprint_branch:
+                description: branch to read the blueprint from, defaults to the main
+                  branch if left unset
+                type: string
+              blueprint_name:
+                description: specifies to read 'generator-<blueprint_name>.yaml',
+                  selects which blueprint to generate, defaults to 'main' if left
+                  unset
+                type: string
+              blueprint_repo_url:
+                description: repo url for the blueprint
+                type: string
+              parameters:
+                additionalProperties:
+                  type: string
+                description: "the actual parameter values to be set when performing
+                  the render operation. These are written into the target_spec_file
+                  \n changing these is what triggers the render operation because
+                  the resource becomes out of sync"
+                type: object
+              target_branch:
+                description: branch to commit to if the spec has changed (will be
+                  created if does not exist or updated), defaults to 'update' if left
+                  unset
+                type: string
+              target_branch_fork_from:
+                description: branch to fork from if the target branch does not yet
+                  exist, defaults to the main branch if left unset
+                type: string
+              target_repo_url:
+                description: repo url to render to if the spec has changed
+                type: string
+              target_spec_file:
+                description: filename of the spec file that is placed in the render
+                  output, defaults to 'generated-main.yaml' if left unset
+                type: string
+            required:
+            - parameters
+            type: object
+          status:
+            description: RendererStatus defines the observed state of Renderer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

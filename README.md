@@ -17,6 +17,10 @@ create a custom resource and a controller scaffold
 operator-sdk create api --group tpl2git --version v1alpha1 --kind Renderer --resource --controller
 ```
 
-edit `api/v1alpha1/renderer_types.go` to define the fields of your custom resource, then run `make` to
-adapt the code to reflect your changes.
+edit `api/v1alpha1/renderer_types.go` to define the fields of your custom resource. 
+
+run `make` to adapt the code to reflect your changes.
+
+run `make manifests` to create the custom resource definition manifests.
+
 
