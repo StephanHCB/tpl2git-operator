@@ -3,7 +3,7 @@ package controllers
 import (
 	"context"
 	"fmt"
-	aulogging "github.com/StephanHCB/go-autumn-logging"
+	_ "github.com/StephanHCB/go-autumn-logging-rlog"
 	generatorgit "github.com/StephanHCB/go-generator-git"
 	"github.com/go-logr/logr"
 	"github.com/google/go-cmp/cmp"
@@ -62,6 +62,7 @@ type RendererReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.7.0/pkg/reconcile
 func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := r.Log.WithValues("renderer", req.NamespacedName)
+	ctx = logr.NewContext(ctx, logger)
 
 	// TODO some pointers on how to do proper error handling
 	// https://github.com/improbable-eng/etcd-cluster-operator/blob/f84abc6561735814debd67d45bb62d2d2ed8cf4a/controllers/etcdcluster_controller.go#L546
@@ -81,10 +82,6 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		logger.Info("no update needed, success")
 		return ctrl.Result{}, nil
 	}
-
-	// TODO create Logr integration library for go-autumn-logging
-	// for now, just avoid the nil deref
-	aulogging.SetupNoLoggerForTesting()
 
 	// business logic
 
