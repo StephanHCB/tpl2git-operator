@@ -7,6 +7,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	aulogging "github.com/StephanHCB/go-autumn-logging"
 	generatorgit "github.com/StephanHCB/go-generator-git"
 
 	"github.com/go-logr/logr"
@@ -52,6 +53,10 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	// if you need it:
 	// original := renderer.DeepCopy()
+
+	// TODO create Logr integration library for go-autumn-logging
+	// for now, just avoid the nil deref
+	aulogging.SetupNoLoggerForTesting()
 
 	// business logic
 
