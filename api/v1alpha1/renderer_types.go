@@ -52,13 +52,13 @@ type RendererStatus struct {
 	// this allows the operator to determine if there is anything to be done
 	// (and gives us some debugging info)
 	CurrentBlueprintRepoUrl string `json:"current_blueprint_repo_url,omitempty"`
-	CurrentBlueprintBranch string `json:"current_blueprint_branch,omitempty"`
-	CurrentBlueprintName string `json:"current_blueprint_name,omitempty"`
+	CurrentBlueprintBranch  string `json:"current_blueprint_branch,omitempty"`
+	CurrentBlueprintName    string `json:"current_blueprint_name,omitempty"`
 
-	CurrentTargetRepoUrl string `json:"current_target_repo_url,omitempty"`
-	CurrentTargetBranch string `json:"current_target_branch,omitempty"`
+	CurrentTargetRepoUrl        string `json:"current_target_repo_url,omitempty"`
+	CurrentTargetBranch         string `json:"current_target_branch,omitempty"`
 	CurrentTargetBranchForkFrom string `json:"current_target_branch_fork_from,omitempty"`
-	CurrentTargetSpecFile string `json:"current_target_spec_file,omitempty"`
+	CurrentTargetSpecFile       string `json:"current_target_spec_file,omitempty"`
 
 	CurrentParameters map[string]string `json:"current_parameters"`
 }

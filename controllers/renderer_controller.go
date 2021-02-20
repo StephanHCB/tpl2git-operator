@@ -16,13 +16,27 @@ import (
 )
 
 func isUnchanged(spec tpl2gitv1alpha1.RendererSpec, status tpl2gitv1alpha1.RendererStatus) bool {
-	if spec.BlueprintRepoUrl != status.CurrentBlueprintRepoUrl { return false }
-	if spec.BlueprintBranch != status.CurrentBlueprintBranch { return false }
-	if spec.BlueprintName != status.CurrentBlueprintName { return false }
-	if spec.TargetRepoUrl != status.CurrentTargetRepoUrl { return false }
-	if spec.TargetBranch != status.CurrentTargetBranch { return false }
-	if spec.TargetBranchForkFrom != status.CurrentTargetBranchForkFrom { return false }
-	if spec.TargetSpecFile != status.CurrentTargetSpecFile { return false }
+	if spec.BlueprintRepoUrl != status.CurrentBlueprintRepoUrl {
+		return false
+	}
+	if spec.BlueprintBranch != status.CurrentBlueprintBranch {
+		return false
+	}
+	if spec.BlueprintName != status.CurrentBlueprintName {
+		return false
+	}
+	if spec.TargetRepoUrl != status.CurrentTargetRepoUrl {
+		return false
+	}
+	if spec.TargetBranch != status.CurrentTargetBranch {
+		return false
+	}
+	if spec.TargetBranchForkFrom != status.CurrentTargetBranchForkFrom {
+		return false
+	}
+	if spec.TargetSpecFile != status.CurrentTargetSpecFile {
+		return false
+	}
 	return cmp.Equal(spec.Parameters, status.CurrentParameters, cmpopts.EquateEmpty())
 }
 

@@ -78,13 +78,27 @@ spec:
           status:
             description: RendererStatus defines the observed state of Renderer
             properties:
-              current_parameters:
-                additionalProperties:
-                  type: string
+              current_blueprint_branch:
+                type: string
+              current_blueprint_name:
+                type: string
+              current_blueprint_repo_url:
                 description: "the parameter values used during last render \n this
                   allows the operator to determine if there is anything to be done
                   (and gives us some debugging info)"
+                type: string
+              current_parameters:
+                additionalProperties:
+                  type: string
                 type: object
+              current_target_branch:
+                type: string
+              current_target_branch_fork_from:
+                type: string
+              current_target_repo_url:
+                type: string
+              current_target_spec_file:
+                type: string
             required:
             - current_parameters
             type: object
