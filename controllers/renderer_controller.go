@@ -6,6 +6,8 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	generatorgit "github.com/StephanHCB/go-generator-git"
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -51,7 +53,60 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	// if you need it:
 	// original := renderer.DeepCopy()
 
-	// your logic here
+	// business logic
+
+	gen := generatorgit.ThreadsafeInstance()
+
+	if err := gen.CreateTemporaryWorkdir(ctx, "/tmp"); err != nil {
+		logger.Error(err, "error during CreateTemporaryWorkdir")
+		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
+		return ctrl.Result{}, nil
+	}
+
+	if err := gen.CloneSourceRepo(ctx, renderer.Spec.BlueprintRepoUrl, renderer.Spec.BlueprintBranch); err != nil {
+		logger.Error(err, "error during CloneSourceRepo")
+		_ = gen.Cleanup(ctx)
+		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
+		return ctrl.Result{}, nil
+	}
+
+	if err := gen.CloneTargetRepo(ctx, renderer.Spec.TargetRepoUrl, renderer.Spec.TargetBranch, renderer.Spec.TargetBranchForkFrom); err != nil {
+		logger.Error(err, "error during CloneTargetRepo")
+		_ = gen.Cleanup(ctx)
+		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
+		return ctrl.Result{}, nil
+	}
+
+	if response, err := gen.WriteRenderSpecFile(ctx, renderer.Spec.BlueprintName, "values.txt", renderer.Spec.Parameters); err != nil {
+		logger.Error(err, "error(s) during WriteRenderSpecFile")
+		for i, e := range response.Errors {
+			logger.Error(e, fmt.Sprintf("error %d: %s", i+1, e.Error()))
+		}
+
+		_ = gen.Cleanup(ctx)
+		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
+		return ctrl.Result{}, nil
+	}
+
+	if response, err := gen.Generate(ctx); err != nil {
+		logger.Error(err, "error(s) during Generate")
+		for i, e := range response.Errors {
+			logger.Error(e, fmt.Sprintf("error %d: %s", i+1, e.Error()))
+		}
+
+		_ = gen.Cleanup(ctx)
+		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
+		return ctrl.Result{}, nil
+	}
+
+	// TODO CommitAndPush
+	// - needs name, email, message fields in CRD
+	// - needs auth info
+
+	if err := gen.Cleanup(ctx); err != nil {
+		logger.Error(err, "error during Cleanup")
+	}
+
 	renderer.Status.CurrentParameters = renderer.Spec.Parameters
 
 	// update the renderer in the cluster to write back the status
