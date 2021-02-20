@@ -150,11 +150,14 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	renderer.Status.CurrentParameters = renderer.Spec.Parameters
 
 	// update the renderer in the cluster to write back the status
-	if err := r.Update(ctx, renderer); err != nil {
-		logger.Error(err, "error during resource update for renderer")
+	if err := r.Status().Update(ctx, renderer); err != nil {
+		logger.Error(err, "error during status update for renderer")
 		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
 		return ctrl.Result{}, nil
 	}
+	// this updates the base resource, not the status
+	//   r.Update(ctx, renderer)
+	// thereby creating an event loop
 
 	logger.Info("success updating resource with target_repo_url = " + renderer.Spec.TargetRepoUrl)
 	return ctrl.Result{}, nil
