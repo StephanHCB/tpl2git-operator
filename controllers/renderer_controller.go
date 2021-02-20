@@ -1,7 +1,3 @@
-/*
-Copyright 2021 StephanHCB.
-*/
-
 package controllers
 
 import (
@@ -9,14 +5,26 @@ import (
 	"fmt"
 	aulogging "github.com/StephanHCB/go-autumn-logging"
 	generatorgit "github.com/StephanHCB/go-generator-git"
-
 	"github.com/go-logr/logr"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	tpl2gitv1alpha1 "github.com/StephanHCB/tpl2git-operator/api/v1alpha1"
 )
+
+func isUnchanged(spec tpl2gitv1alpha1.RendererSpec, status tpl2gitv1alpha1.RendererStatus) bool {
+	if spec.BlueprintRepoUrl != status.CurrentBlueprintRepoUrl { return false }
+	if spec.BlueprintBranch != status.CurrentBlueprintBranch { return false }
+	if spec.BlueprintName != status.CurrentBlueprintName { return false }
+	if spec.TargetRepoUrl != status.CurrentTargetRepoUrl { return false }
+	if spec.TargetBranch != status.CurrentTargetBranch { return false }
+	if spec.TargetBranchForkFrom != status.CurrentTargetBranchForkFrom { return false }
+	if spec.TargetSpecFile != status.CurrentTargetSpecFile { return false }
+	return cmp.Equal(spec.Parameters, status.CurrentParameters, cmpopts.EquateEmpty())
+}
 
 // RendererReconciler reconciles a Renderer object
 type RendererReconciler struct {
@@ -53,6 +61,12 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	// if you need it:
 	// original := renderer.DeepCopy()
+
+	// bail out if status and spec are in sync to avoid needless runs
+	if isUnchanged(renderer.Spec, renderer.Status) {
+		logger.Info("no update needed, success")
+		return ctrl.Result{}, nil
+	}
 
 	// TODO create Logr integration library for go-autumn-logging
 	// for now, just avoid the nil deref
@@ -112,6 +126,13 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		logger.Error(err, "error during Cleanup")
 	}
 
+	renderer.Status.CurrentBlueprintRepoUrl = renderer.Spec.BlueprintRepoUrl
+	renderer.Status.CurrentBlueprintBranch = renderer.Spec.BlueprintBranch
+	renderer.Status.CurrentBlueprintName = renderer.Spec.BlueprintName
+	renderer.Status.CurrentTargetRepoUrl = renderer.Spec.TargetRepoUrl
+	renderer.Status.CurrentTargetBranch = renderer.Spec.TargetBranch
+	renderer.Status.CurrentTargetBranchForkFrom = renderer.Spec.TargetBranchForkFrom
+	renderer.Status.CurrentTargetSpecFile = renderer.Spec.TargetSpecFile
 	renderer.Status.CurrentParameters = renderer.Spec.Parameters
 
 	// update the renderer in the cluster to write back the status
