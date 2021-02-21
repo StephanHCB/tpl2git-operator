@@ -1,5 +1,17 @@
 # tpl2git-operator
 
+## framework choice
+
+This repository contains a sample kubernetes operator built 
+using [operator-framework/operator-sdk](https://github.com/operator-framework/operator-sdk).
+
+_Other Frameworks:_
+
+For an example using [kubernetes-sigs/kubebuilder](https://github.com/kubernetes-sigs/kubebuilder) 
+that comes with extensive documentation, 
+including a [youtube video](https://www.youtube.com/watch?v=8Ex7ybi273g) of a talk by Michael Gasch & Rafael Brito
+at VMware code, see [embano1/codeconnect-vm-operator](https://github.com/embano1/codeconnect-vm-operator).
+
 ## generate project
 
 must be in an empty directory (will not even let you have a .git directory)
