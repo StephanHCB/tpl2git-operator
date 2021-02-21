@@ -87,12 +87,13 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	gen := generatorgit.ThreadsafeInstance()
 
+	logger.Info("creating temporary working directory")
 	if err := gen.CreateTemporaryWorkdir(ctx, "/tmp"); err != nil {
 		logger.Error(err, "error during CreateTemporaryWorkdir")
-		// TODO for now, ignore errors and return nil so we do not get continuously rescheduled
-		return ctrl.Result{}, nil
+		return ctrl.Result{}, err
 	}
 
+	logger.Info("cloning source and target repos")
 	if err := gen.CloneSourceRepo(ctx, renderer.Spec.BlueprintRepoUrl, renderer.Spec.BlueprintBranch); err != nil {
 		logger.Error(err, "error during CloneSourceRepo")
 		_ = gen.Cleanup(ctx)
@@ -107,6 +108,7 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, nil
 	}
 
+	logger.Info("rendering")
 	if response, err := gen.WriteRenderSpecFile(ctx, renderer.Spec.BlueprintName, "values.txt", renderer.Spec.Parameters); err != nil {
 		logger.Error(err, "error(s) during WriteRenderSpecFile")
 		for i, e := range response.Errors {
@@ -129,6 +131,7 @@ func (r *RendererReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, nil
 	}
 
+	logger.Info("commit and push not implemented yet")
 	// TODO CommitAndPush
 	// - needs name, email, message fields in CRD
 	// - needs auth info
